@@ -11,8 +11,8 @@ import java.net.Socket;
  * Created by chengchuan on 2015/12/15.
  */
 public class Client {
-    public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("127.0.0.1",8888);
+
+    public void sendMessage(String message, Socket socket) throws IOException {
         //获取输出字节流
         OutputStream outputStream = socket.getOutputStream();
         //将字节流包装成字符流
@@ -20,7 +20,7 @@ public class Client {
         //设置缓冲区
         PrintWriter printWriter = new PrintWriter(bufferedOutputStream);
 
-        printWriter.write("你好，我是客户端");
+        printWriter.write(message);
         //清空缓冲区
         printWriter.flush();
 
@@ -29,5 +29,14 @@ public class Client {
         bufferedOutputStream.close();
         outputStream.close();
         socket.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        Socket socket = new Socket("127.0.0.1", 8888);
+        String message = "这是发送的第二条信息";
+        //发送消息
+        Client client = new Client();
+        client.sendMessage(message, socket);
     }
 }
