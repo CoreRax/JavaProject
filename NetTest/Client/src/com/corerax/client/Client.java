@@ -33,38 +33,63 @@ public class Client {
         }
     }
 
-    public void sendMessage(String message, Socket socket) throws IOException {
+    public String sendMessage(String message, Socket socket) throws IOException {
+        String result = "";
         //获取输出字节流
         OutputStream outputStream = socket.getOutputStream();
-        //将字节流包装成字符流
-        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
-        //设置缓冲区
-        PrintWriter printWriter = new PrintWriter(bufferedOutputStream);
+
+        //获取打印流
+        PrintWriter printWriter = new PrintWriter(outputStream);
 
         printWriter.write(message);
         //清空缓冲区
         printWriter.flush();
+        //关闭输入流
+        socket.shutdownOutput();
+
+
+        /**
+         * 接收消息
+         */
+        //获取字节输入流
+        InputStream inputStream = socket.getInputStream();
+        //将字节输入流包装成字符输入流
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        //设置缓冲
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        //设置变量读取行
+        String line = "";
+        while ((line = bufferedReader.readLine()) != null) {
+            result+=line;
+        }
 
         //关闭资源
         printWriter.close();
-        bufferedOutputStream.close();
         outputStream.close();
+        bufferedReader.close();
+        inputStreamReader.close();
+        inputStream.close();
         socket.close();
+
+        return result;
     }
 
 
     public static void main(String[] args) {
         Socket socket = null;
         String message = "这是发送的第二条信息";
+        String result = null;
         //发送消息
         Client client = new Client();
         try {
             socket = new Socket(serverIP, serverPort);
-            client.sendMessage(message, socket);
+            result = client.sendMessage(message, socket);
+            System.out.println("服务器回复的消息是：" + result);
         } catch (UnknownHostException e) {
             System.out.println("未知的主机");
         } catch (IOException e) {
             System.out.println("信息发送失败");
+            e.printStackTrace();
         }
     }
 }

@@ -1,9 +1,6 @@
 package com.corerax.server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 /**
@@ -23,6 +20,8 @@ public class ServerThread extends Thread {
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
         BufferedReader bufferedReader = null;
+        OutputStream outputStream = null;
+        PrintWriter printWriter = null;
         StringBuffer datas = new StringBuffer();
         try {
             //获取字节输入流
@@ -37,6 +36,22 @@ public class ServerThread extends Thread {
                 System.out.println("服务端接收到一条消息：" + line);
                 datas.append(line);
             }
+            //关闭输入流
+            socket.shutdownInput();
+
+            /**
+             * 服务端返回消息
+             */
+            //获取字节输出流
+            outputStream = socket.getOutputStream();
+            //包装为打印流
+            printWriter = new PrintWriter(outputStream);
+
+            //发送消息
+            printWriter.write("已经收到你的消息！");
+            //清空缓冲区
+            printWriter.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -50,6 +65,12 @@ public class ServerThread extends Thread {
                 }
                 if (inputStream!=null){
                     inputStream.close();
+                }
+                if (printWriter!=null){
+                    printWriter.close();
+                }
+                if (outputStream!=null){
+                    outputStream.close();
                 }
                 socket.close();
             } catch (IOException e) {
