@@ -1,7 +1,9 @@
 package com.corerax.client;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
@@ -33,6 +35,13 @@ public class Client {
         }
     }
 
+    /**
+     * 发送信息到socket服务器
+     * @param message 信息内容
+     * @param socket soket对象
+     * @return 返回信息
+     * @throws IOException
+     */
     public String sendMessage(String message, Socket socket) throws IOException {
         String result = "";
         //获取输出字节流
@@ -74,6 +83,30 @@ public class Client {
         return result;
     }
 
+    /**
+     * 获取v2ex网站上最新的内容
+     * @return
+     */
+    public String getV2UpToDate(){
+        URL url = null;
+        String data = "";
+        try {
+            url = new URL("https://www.v2ex.com/api/topics/latest.json");
+            InputStream inputStream = url.openStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line ="";
+            while ((line = bufferedReader.readLine())!=null){
+                data += line;
+            }
+            System.out.println(data);
+        } catch (MalformedURLException e) {
+            System.out.println("连接失败");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
 
     public static void main(String[] args) {
         Socket socket = null;
