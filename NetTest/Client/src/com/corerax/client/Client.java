@@ -1,10 +1,9 @@
 package com.corerax.client;
 
+import org.json.JSONObject;
+
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Properties;
 
 /**
@@ -20,6 +19,7 @@ public class Client {
         //加载配置信息
         loadConfig();
     }
+
     /**
      * 加载配置信息
      */
@@ -37,8 +37,9 @@ public class Client {
 
     /**
      * 发送信息到socket服务器
+     *
      * @param message 信息内容
-     * @param socket soket对象
+     * @param socket  soket对象
      * @return 返回信息
      * @throws IOException
      */
@@ -69,7 +70,7 @@ public class Client {
         //设置变量读取行
         String line = "";
         while ((line = bufferedReader.readLine()) != null) {
-            result+=line;
+            result += line;
         }
 
         //关闭资源
@@ -85,28 +86,42 @@ public class Client {
 
     /**
      * 获取v2ex网站上最新的内容
+     *
      * @return
      */
-    public String getV2UpToDate(){
+    public String getV2UpToDate() {
         URL url = null;
         String data = "";
         try {
             url = new URL("https://www.v2ex.com/api/topics/latest.json");
-            InputStream inputStream = url.openStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String line ="";
-            while ((line = bufferedReader.readLine())!=null){
-                data += line;
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            //设置连接
+            connection.setConnectTimeout(3000);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            int resultCode = connection.getResponseCode();
+            if (resultCode == 200) {
+                InputStream inputStream = connection.getInputStream();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String line = "";
+                while ((line = bufferedReader.readLine()) != null) {
+                    data += line;
+                }
+                data = data.substring(1,data.length()-1);
+                JSONObject json= new JSONObject(data);
+                System.out.println(json.get("title"));
+            }else {
+                System.out.println("获取失败");
             }
-            System.out.println(data);
         } catch (MalformedURLException e) {
             System.out.println("连接失败");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return  null;
+        return null;
     }
+
 
     public static void main(String[] args) {
         Socket socket = null;
