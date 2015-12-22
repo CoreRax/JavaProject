@@ -11,8 +11,8 @@ import java.net.Socket;
 public class Test {
     public static void main(String[] args) throws IOException {
 
-        //发送消息
-        Client client = new Client();
-        client.getV2UpToDate();
+        Object[] data = new Object[9];
+            int pivot = (int) Math.ceil((double) data.length/2);
+        System.out.println(pivot);
     }
 }
