@@ -4,23 +4,23 @@ package com.corerax.quicksort;
  * Created by chengchuan on 2015/12/23.
  */
 public class QuickSortDemo {
-    public static void sort(Comparable[] a){
+    public static void sort(int[] a){
         sort(a, 0, a.length-1);
     }
 
-    private static void sort(Comparable[] a, int lo, int hi){
-        if (lo<=hi)return;
+    private static void sort(int[] a, int lo, int hi){
+        if (hi <= lo)return;
         int j = partition(a, lo, hi);
         sort(a, lo, j-1);
         sort(a, j+1, hi);
     }
 
-    private static int partition(Comparable[] a, int lo, int hi){
+    private static int partition(int[] a, int lo, int hi){
         /**
          * 将数组切分为a[lo...i-1],a[i],a[i+1...hi]
          */
         int i = lo, j = hi+1;
-        Comparable v = a[lo];
+        int v = a[lo];
         while (true){
             /**
              * 左右扫描检查扫描是否结束
@@ -32,5 +32,18 @@ public class QuickSortDemo {
         }
         exch(a, lo, j);
         return j;
+    }
+
+    private static boolean less(int a, int b){
+        if (a <= b){
+            return true;
+        }
+        return false;
+    }
+
+    private static  void exch(int[] a, int x ,int y){
+        int temp = a[x];
+        a[x] = a[y];
+        a[y] = temp;
     }
 }
