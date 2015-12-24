@@ -6,11 +6,11 @@ package com.corerax.mergesort;
  */
 public class InplaceMergeSort {
     public void merge(int[] a){
-        int[] aux = {};
+        int[] aux = new int[10];
         //设置低位为0
         int lo = 0;
         //设置高位
-        int hi = a.length;
+        int hi = a.length-1;
         //设置中位
         int mid = hi/2 + 1;
 
@@ -22,14 +22,14 @@ public class InplaceMergeSort {
         /**
          * 将内容复制到一个新的数组
          */
-        for (int k = lo; k <= hi; k++){
-            aux[k] = a[k];
+        for (int k = lo; k < hi; k++){
+              aux[k] = a[k];
         }
 
         /**
          * 归并
          */
-        for (int k = lo; k <=hi; k++){
+        for (int k = lo; k <hi; k++){
             if (i>mid){
                 a[k] = aux[j++];
             }
